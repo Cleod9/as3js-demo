@@ -1,0 +1,54 @@
+body {
+  background: #aa2222;
+  color: white;
+  font-family: Verdana, Arial;
+}
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0px;
+  a {
+    text-decoration: none;
+  }
+}
+a {
+  color: #dddddd;
+  &:visited, &:active {
+    color: #dddddd;
+  }
+  &:hover {
+    color: #eeeeee;
+    text-decoration: underline;
+  }
+}
+.CodeMirror {
+  height: 700px;
+}
+.AS3JSDemo {
+  padding: 40px;
+}
+.AS3JSDemo-title {
+  text-align: center;
+}
+.AS3JSDemo-examples {
+  float: right;
+  select {
+    min-width: 150px;
+  }
+}
+.AS3JSDemo-editor {
+  width: 100%;
+}
+.AS3JSDemo-inputWrapper {
+  padding: 20px;
+  textarea {
+    width: 100%;
+  }
+}
+.AS3JSDemo-outputWrapper {
+  padding: 20px;
+  textarea {
+    width: 100%;
+  }
+}
+.AS3JSDemo-textWrap {
+
+}

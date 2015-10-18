@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+      <meta name="description" content="AS3JS is a transpiler for converting ActionScript 3.0 to JavaScript that allows you to write both client and server-side JavaScript applications using AS3" />
+      <meta name="keywords" content="as3, js, node, javascript, actionscript, flash, importjs, oops, oopsjs, oop, mcleodgaming, greg, mcleod, demo" />
+      <title>AS3JS - Demo</title>
+      <link rel="stylesheet" type="text/css" href="app.css">
+      <script type="text/javascript" src="codemirror.js"></script>
+      <script type="text/javascript" src="simple.js"></script>
+      <!--[if lt IE 9]>
+      <script type="text/javascript">
+      document.createElement("nav");
+      document.createElement("header");
+      document.createElement("footer");
+      document.createElement("section");
+      document.createElement("aside");
+      document.createElement("article");
+      </script>
+      <![endif]-->
+  </head>
+  <body>
+    <div class="AS3JSDemo">
+      <h1 class="AS3JSDemo-title"><a href="http://www.as3js.org">AS3JS</a> Live Demo</h1>
+      <p>This page acts is a live demonstration of <a href="http://www.as3js.org">AS3JS</a>. Edit ActionScript 3.0 code to the left and it will be automatically transpiled to JavaScript on the right.</p>
+      <p>(In AS3 you can only have 1 class per file. Write "/* AS3JS File */" in the editor to indicate a new file)
+      <div class="AS3JSDemo-entry">
+        <b>Entry Point Class Path:</b>
+        <br/>
+        <input id="entry" type="text" placeholder="Enter a class path" value="Main"/>
+        <br/>
+        <br/>
+        <input id="eval" type="checkbox" checked> Evaluate Output
+      </div>
+      <div class="AS3JSDemo-examples">
+        <b>Examples: </b>
+        <select id="examples">
+          <option value="helloworld" selected>Hello World</option>
+          <option value="simpleimport">Simple Import</option>
+          <option value="gettersetter">Getter/Setter</option>
+          <option value="point">Point Class</option>
+          <option value="circular">Circular Dependency</option>
+        </select>
+      </div>
+      <table class="AS3JSDemo-editor">
+        <tbody>
+          <tr>
+            <td class="AS3JSDemo-inputWrapper">
+              <h3>Input (AS3):</h3>
+              <textarea id="input" rows="25"></textarea>
+            </td>
+            <td class="AS3JSDemo-outputWrapper">
+              <h3>Output (JS):</h3>
+              <textarea id="output" rows="25"></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+<script id="helloworld" type="text/plain" data-entry="Main">/* AS3JS File */
+package {
+  public class Main {
+    public function Main() {
+      console.log("Hello World");
+    }
+  }
+}</script>
+<script id="simpleimport" type="text/plain" data-entry="Main">/* AS3JS File */
+package {
+  import com.app.Foo;
+
+  public class Main {
+    public function Main() {
+      console.log(Foo.bar());
+    }
+  }
+}
+/* AS3JS File */
+package com.app {
+  public class Foo {
+    public static function bar() {
+      return 42;
+    }
+  }
+}</script>
+<script id="gettersetter" type="text/plain" data-entry="Main">/* AS3JS File */
+package {
+
+  public class Main {
+    public function Main() {
+      // Note: AS3JS will needs explicit type in order to detect the getter/setters
+      var foo:Foo = new Foo();
+      foo.bar = "apple";
+      foo.bar = null;
+      // Should still print "apple"
+      console.log(foo.bar);
+    }
+  }
+}
+/* AS3JS File */
+package {
+
+  /**
+  * Unlike typical JS getter/setters, AS3JS will convert to Vanilla functions
+  **/
+  public class Foo {
+    protected var _bar:String;
+
+    public function Foo() {
+      _bar = "";
+    }
+
+    public function get bar():String {
+      return _bar;
+    }
+    public function set bar(value:String):void {
+      // Let's prevent bar from being null
+      _bar = (value !== null) ? value : _bar;
+    }
+  }
+}</script>
+<script id="point" type="text/plain" data-entry="Main">/* AS3JS File */
+package {
+  import flash.geom.Point;
+
+  public class Main {
+    public function Main() {
+      var point:Point = new Point(10, 10);
+      console.log(point);
+    }
+  }
+}
+/* AS3JS File */
+package flash.geom
+{
+  public class Point
+  {
+    public var x:Number;
+    public var y:Number;
+     
+    public static function distance(p1:Point, p2:Point) 
+    {
+      return Math.sqrt(Math.pow(p2.y - p1.y, 2) + Math.pow(p2.x - p1.x, 2));
+    }
+     
+    public function Point(x:Number = 0, y:Number = 0):void
+    {
+      this.x = x;
+      this.y = y;
+    }
+    public function clone():Point
+    {
+      var point:Point = new Point(x, y);
+       
+      return point;
+    }
+    public function equals(point:Point):void
+    {
+      return (point.x == x && point.y == y);
+    }
+  }
+}</script>
+<script id="circular" type="text/plain" data-entry="Main">/* AS3JS File */
+package {
+
+  /**
+  * Note that the imports for classes within the same package are implicit)
+  **/
+  public class Main {
+    public function Main() {
+      // Note: This would fail under a typical module system
+      console.log("Circular dependency test:");
+      console.log(Brother.sister());
+      console.log(Sister.brother());
+    }
+  }
+}
+/* AS3JS File */
+package {
+  public class Brother {
+    public static function sister():String {
+      return 'brother [' + Sister.name + ']';
+    }
+  }
+}
+/* AS3JS File */
+package {
+  public class Sister {
+    public static function brother():String {
+      return 'sister [' + Brother.name + ']';
+    }
+  }
+}</script>
+    <script type="text/javascript" src="app.js"></script>
+  </body>
+</html>
+
+
+  

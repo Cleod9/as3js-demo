@@ -1,0 +1,30 @@
+{
+	"name": "as3js-demo",
+	"version": "0.3.0",
+	"author": "Greg McLeod <cleod9@gmail.com>",
+	"description": "Browser demo of AS3JS, the AS3 to JavaScript transpiler.",
+	"dependencies": {
+		"as3js": "0.3.0",
+    "webpack": "1.12.2",
+    "raw-loader": "0.5.1",
+    "sass-loader": "3.0.0",
+    "node-sass": "3.3.3",
+    "extract-text-webpack-plugin": "0.8.2",
+    "js-beautify": "1.5.10",
+    "codemirror": "5.7.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/cleod9/as3js-demo"
+	},
+	"keywords": [
+		"as3",
+		"js",
+		"converter",
+		"import",
+		"oop",
+    "demo",
+    "playground"
+	],
+	"license": "MIT"
+}
