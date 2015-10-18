@@ -9722,15 +9722,9 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {var AS3JS = global.AS3JS = __webpack_require__(7);
-	var Program = __webpack_require__(8);
+	/* WEBPACK VAR INJECTION */(function(global) {global.AS3JS = __webpack_require__(7);
 
-	module.exports = AS3JS.load({
-		program: Program,
-		entry: "com.mcleodgaming.as3js.Main",
-		entryMode: "static"
-	});
-
+	module.exports = __webpack_require__(8);
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
@@ -10150,7 +10144,7 @@
 	        classes[i].process(classes);
 	      }
 	      // Load stringified versions of snippets/main-snippet.js and snippets/class-snippet.js
-	      var mainTemplate = "(function(){var Program={};{{packages}}if(typeof module !== 'undefined'){module.exports=Program;}else if(typeof window!=='undefined'&&typeof AS3JS!=='undefined'){window['{{entryPoint}}']=AS3JS.load({program:Program,entry:\"{{entryPoint}}\",entryMode:\"{{entryMode}}\"});}})();";
+	      var mainTemplate = "(function(){var Program={};{{packages}}if(typeof module !== 'undefined'){module.exports=AS3JS.load({program:Program,entry:\"{{entryPoint}}\",entryMode:\"{{entryMode}}\"});}else if(typeof window!=='undefined'&&typeof AS3JS!=='undefined'){window['{{entryPoint}}']=AS3JS.load({program:Program,entry:\"{{entryPoint}}\",entryMode:\"{{entryMode}}\"});}})();";
 	      var classTemplate = "Program[\"{{module}}\"]=function(module, exports){{{source}}};";
 	      var packageObjects = [];
 	      var classObjects = null;
@@ -11952,7 +11946,11 @@
 	    module.exports = AS3Variable;
 	  };
 	  if (true) {
-	    module.exports = Program;
+	    module.exports = AS3JS.load({
+	      program: Program,
+	      entry: "com.mcleodgaming.as3js.Main",
+	      entryMode: "static"
+	    });
 	  } else if (typeof window !== 'undefined' && typeof AS3JS !== 'undefined') {
 	    window['com.mcleodgaming.as3js.Main'] = AS3JS.load({
 	      program: Program,
