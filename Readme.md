@@ -8,7 +8,7 @@ To build:
 
 ```
 npm install
-./node_modules/.bin/weback
+./node_modules/.bin/webpack
 ```
 
 App is located in the `./app` folder
