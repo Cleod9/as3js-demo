@@ -503,6 +503,8 @@ a {
 
 .AS3JSDemo-title {
   text-align: center; }
+  .AS3JSDemo-title sub {
+    font-size: 10px; }
 
 .AS3JSDemo-examples {
   float: right; }

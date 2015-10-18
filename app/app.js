@@ -9722,8 +9722,7 @@
 /* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AS3JS = __webpack_require__(7);
-
+	/* WEBPACK VAR INJECTION */(function(global) {var AS3JS = global.AS3JS = __webpack_require__(7);
 	var Program = __webpack_require__(8);
 
 	module.exports = AS3JS.load({
@@ -9732,6 +9731,7 @@
 		entryMode: "static"
 	});
 
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
 /* 7 */
@@ -10855,6 +10855,7 @@
 	      this.classPath = classPath;
 	      this.parserOptions = {};
 	      this.parserOptions.safeRequire = false;
+	      this.parserOptions.ignoreFlash = false;
 	    };
 
 	    AS3Parser.PREVIOUS_BLOCK = null;
@@ -11807,10 +11808,11 @@
 	      if (typeof options.safeRequire !== 'undefined') {
 	        this.parserOptions.safeRequire = options.safeRequire;
 	      }
+	      if (typeof options.ignoreFlash !== 'undefined') {
+	        this.parserOptions.ignoreFlash = options.ignoreFlash;
+	      }
 
-	      var classDefinition = new AS3Class({
-	        safeRequire: this.parserOptions.safeRequire
-	      });
+	      var classDefinition = new AS3Class(this.parserOptions);
 	      this.stack.splice(0, this.stack.length);
 	      this.stack.push(AS3ParseState.START);
 
