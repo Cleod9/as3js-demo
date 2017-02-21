@@ -9732,13 +9732,13 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/*******************************
-	  AS3JS Version 0.3.0
+	  AS3JS Version 0.3.1
 	  
 	    AS3 to JS converter for use with ImportJS and OOPS.js.
 	  
 	  The MIT License (MIT)
 
-	  Copyright (c) 2015 Greg McLeod <cleod9{at}gmail.com>
+	  Copyright (c) 2017 Greg McLeod <cleod9{at}gmail.com>
 
 	  Permission is hereby granted, free of charge, to any person obtaining a copy
 	  of this software and associated documentation files (the "Software"), to deal
@@ -10694,7 +10694,9 @@
 	          if (!(this.ignoreFlash && this.imports[i].indexOf('flash.') >= 0) && this.parent != this.imports[i].substr(this.imports[i].lastIndexOf('.') + 1) && this.packageName + '.' + this.className != this.imports[i]) //Ignore flash imports
 	          {
 	            // Must be in the filtered map, otherwise no point in writing
-	            if (this.classMapFiltered[this.packageMap[this.imports[i]].className]) {
+	            if (!this.packageMap[this.imports[i]]) {
+	              Main.warn("Warning, missing class path: " + this.imports[i] + " (found in " + this.packageName + '.' + this.className + ")");
+	            } else if (this.classMapFiltered[this.packageMap[this.imports[i]].className]) {
 	              tmpArr.push(this.imports[i].substr(this.imports[i].lastIndexOf('.') + 1)); //<-This will return characters after the final '.', or the entire String if no '.'
 	            }
 	          }
@@ -10711,7 +10713,9 @@
 	        if (!(this.ignoreFlash && this.imports[i].indexOf('flash.') >= 0) && this.packageName + '.' + this.className != this.imports[i] && !(this.parentDefinition && this.parentDefinition.packageName + '.' + this.parentDefinition.className == this.imports[i])) //Ignore flash imports and parent for injections
 	        {
 	          // Must be in the filtered map, otherwise no point in writing
-	          if (this.classMapFiltered[this.packageMap[this.imports[i]].className]) {
+	          if (!this.packageMap[this.imports[i]]) {
+	            Main.warn("Warning, missing class path: " + this.imports[i] + " (found in " + this.packageName + '.' + this.className + ")");
+	          } else if (this.classMapFiltered[this.packageMap[this.imports[i]].className]) {
 	            injectedText += "\t" + this.imports[i].substr(this.imports[i].lastIndexOf('.') + 1) + " = module.import('" + this.packageMap[this.imports[i]].packageName + "', '" + this.packageMap[this.imports[i]].className + "');\n";
 	          }
 	        }
