@@ -9732,7 +9732,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/*******************************
-	  AS3JS Version 0.3.2
+	  AS3JS Version 0.3.3
 	  
 	    AS3 to JS converter for use with ImportJS and OOPS.js.
 	  
@@ -9833,12 +9833,20 @@
 	        }
 	      }
 		
-	      // Run inject() functions as the final step (this trivializes circular dependencies)
+	      // Run inject() and $cinit() functions as the final step (this trivializes circular dependencies)
 	      for (i in packages) {
 	        // Execute the injection functions
 	        for (j in packages[i]) {
 	          if (typeof packages[i][j].module.inject === 'function') {
 	            packages[i][j].module.inject();
+	          }
+	        }
+	      }
+	      for (i in packages) {
+	        // Execute the $cinit functions
+	        for (j in packages[i]) {
+	          if (typeof packages[i][j].module.exports.$cinit === 'function') {
+	            packages[i][j].module.exports.$cinit();
 	          }
 	        }
 	      }
@@ -9848,7 +9856,7 @@
 	      var entryPoint = imports(entryPkgInfo.packageName, entryPkgInfo.className);
 	      if (params.entryMode === "instance") {
 	        return new entryPoint();
-	      } else if (params.entryMode === "static" && typeof module !== 'undefined') {
+	      } else if (params.entryMode === "static") {
 	        return entryPoint;
 	      }
 	    }
@@ -9870,57 +9878,42 @@
 	(function() {
 	  var Program = {};
 	  Program["com.mcleodgaming.as3js.enums.AS3Encapsulation"] = function(module, exports) {
-	    module.inject = function() {
-	      AS3Encapsulation.PUBLIC = "public";
-	      AS3Encapsulation.PRIVATE = "private";
-	      AS3Encapsulation.PROTECTED = "protected";
-	    };
-
 	    var AS3Encapsulation = function AS3Encapsulation() {};
 
 	    AS3Encapsulation.PUBLIC = null;
 	    AS3Encapsulation.PRIVATE = null;
 	    AS3Encapsulation.PROTECTED = null;
 
+	    AS3Encapsulation.$cinit = function() {
+	      AS3Encapsulation.PUBLIC = "public";
+	      AS3Encapsulation.PRIVATE = "private";
+	      AS3Encapsulation.PROTECTED = "protected";
+
+	    };
+
+	    AS3Encapsulation.prototype.$init = function() {}
+
 	    module.exports = AS3Encapsulation;
 	  };
 	  Program["com.mcleodgaming.as3js.enums.AS3MemberType"] = function(module, exports) {
-	    module.inject = function() {
-	      AS3MemberType.VAR = "var";
-	      AS3MemberType.CONST = "const";
-	      AS3MemberType.FUNCTION = "function";
-	    };
-
 	    var AS3MemberType = function AS3MemberType() {};
 
 	    AS3MemberType.VAR = null;
 	    AS3MemberType.CONST = null;
 	    AS3MemberType.FUNCTION = null;
 
+	    AS3MemberType.$cinit = function() {
+	      AS3MemberType.VAR = "var";
+	      AS3MemberType.CONST = "const";
+	      AS3MemberType.FUNCTION = "function";
+
+	    };
+
+	    AS3MemberType.prototype.$init = function() {}
+
 	    module.exports = AS3MemberType;
 	  };
 	  Program["com.mcleodgaming.as3js.enums.AS3ParseState"] = function(module, exports) {
-	    module.inject = function() {
-	      AS3ParseState.START = "start";
-	      AS3ParseState.PACKAGE_NAME = "packageName";
-	      AS3ParseState.PACKAGE = "package";
-	      AS3ParseState.CLASS_NAME = "className";
-	      AS3ParseState.CLASS = "class";
-	      AS3ParseState.CLASS_EXTENDS = "classExtends";
-	      AS3ParseState.CLASS_IMPLEMENTS = "classImplements";
-	      AS3ParseState.COMMENT_INLINE = "commentInline";
-	      AS3ParseState.COMMENT_MULTILINE = "commentMultiline";
-	      AS3ParseState.STRING_SINGLE_QUOTE = "stringSingleQuote";
-	      AS3ParseState.STRING_DOUBLE_QUOTE = "stringDoubleQuote";
-	      AS3ParseState.STRING_REGEX = "stringRegex";
-	      AS3ParseState.MEMBER_VARIABLE = "memberVariable";
-	      AS3ParseState.MEMBER_FUNCTION = "memberFunction";
-	      AS3ParseState.LOCAL_VARIABLE = "localVariable";
-	      AS3ParseState.LOCAL_FUNCTION = "localFunction";
-	      AS3ParseState.IMPORT_PACKAGE = "importPackage";
-	      AS3ParseState.REQUIRE_MODULE = "requireModule";
-	    };
-
 	    var AS3ParseState = function AS3ParseState() {};
 
 	    AS3ParseState.START = null;
@@ -9942,26 +9935,33 @@
 	    AS3ParseState.IMPORT_PACKAGE = null;
 	    AS3ParseState.REQUIRE_MODULE = null;
 
+	    AS3ParseState.$cinit = function() {
+	      AS3ParseState.START = "start";
+	      AS3ParseState.PACKAGE_NAME = "packageName";
+	      AS3ParseState.PACKAGE = "package";
+	      AS3ParseState.CLASS_NAME = "className";
+	      AS3ParseState.CLASS = "class";
+	      AS3ParseState.CLASS_EXTENDS = "classExtends";
+	      AS3ParseState.CLASS_IMPLEMENTS = "classImplements";
+	      AS3ParseState.COMMENT_INLINE = "commentInline";
+	      AS3ParseState.COMMENT_MULTILINE = "commentMultiline";
+	      AS3ParseState.STRING_SINGLE_QUOTE = "stringSingleQuote";
+	      AS3ParseState.STRING_DOUBLE_QUOTE = "stringDoubleQuote";
+	      AS3ParseState.STRING_REGEX = "stringRegex";
+	      AS3ParseState.MEMBER_VARIABLE = "memberVariable";
+	      AS3ParseState.MEMBER_FUNCTION = "memberFunction";
+	      AS3ParseState.LOCAL_VARIABLE = "localVariable";
+	      AS3ParseState.LOCAL_FUNCTION = "localFunction";
+	      AS3ParseState.IMPORT_PACKAGE = "importPackage";
+	      AS3ParseState.REQUIRE_MODULE = "requireModule";
+
+	    };
+
+	    AS3ParseState.prototype.$init = function() {}
+
 	    module.exports = AS3ParseState;
 	  };
 	  Program["com.mcleodgaming.as3js.enums.AS3Pattern"] = function(module, exports) {
-	    module.inject = function() {
-	      AS3Pattern.IDENTIFIER = [/\w/g, /\w/g];
-	      AS3Pattern.OBJECT = [/[\w\.]/g, /[\w(\w(\.\w)+)]/g];
-	      AS3Pattern.IMPORT = [/[0-9a-zA-Z_$.*]/g, /[a-zA-Z_$][0-9a-zA-Z_$]([.][a-zA-Z_$][0-9a-zA-Z_$])*\*?/g];
-	      AS3Pattern.REQUIRE = [/./g, /["'](.*?)['"]/g];
-	      AS3Pattern.CURLY_BRACE = [/[\{|\}]/g, /[\{|\}]/g];
-	      AS3Pattern.VARIABLE = [/[0-9a-zA-Z_$]/g, /[a-zA-Z_$][0-9a-zA-Z_$]*/g];
-	      AS3Pattern.VARIABLE_TYPE = [/[a-zA-Z_$<>.*][0-9a-zA-Z_$<>.]*/g, /[a-zA-Z_$<>.*][0-9a-zA-Z_$<>.]*/g];
-	      AS3Pattern.VARIABLE_DECLARATION = [/[0-9a-zA-Z_$:<>.*]/g, /[a-zA-Z_$][0-9a-zA-Z_$]*\s*:\s*([a-zA-Z_$<>\.\*][0-9a-zA-Z_$<>\.]*)/g];
-	      AS3Pattern.ASSIGN_START = [/[=\r\n]/g, /[=\r\n]/g];
-	      AS3Pattern.ASSIGN_UPTO = [new RegExp("[^;\\r\\n]", "g"), /(.*?)/g];
-	      AS3Pattern.VECTOR = [/new[\s\t]+Vector\.<(.*?)>\((.*?)\)/g, /new[\s\t]+Vector\.<(.*?)>\((.*?)\)/];
-	      AS3Pattern.ARRAY = [/new[\s\t]+Array\((.*?)\)/g, /new[\s\t]+Array\((.*?)\)/];
-	      AS3Pattern.DICTIONARY = [/new[\s\t]+Dictionary\((.*?)\)/g];
-	      AS3Pattern.REST_ARG = [/\.\.\.[a-zA-Z_$][0-9a-zA-Z_$]*/g, /\.\.\.[a-zA-Z_$][0-9a-zA-Z_$]*/g];
-	    };
-
 	    var AS3Pattern = function AS3Pattern() {};
 
 	    AS3Pattern.IDENTIFIER = null;
@@ -9978,6 +9978,26 @@
 	    AS3Pattern.ARRAY = null;
 	    AS3Pattern.DICTIONARY = null;
 	    AS3Pattern.REST_ARG = null;
+
+	    AS3Pattern.$cinit = function() {
+	      AS3Pattern.IDENTIFIER = [/\w/g, /\w/g];
+	      AS3Pattern.OBJECT = [/[\w\.]/g, /[\w(\w(\.\w)+)]/g];
+	      AS3Pattern.IMPORT = [/[0-9a-zA-Z_$.*]/g, /[a-zA-Z_$][0-9a-zA-Z_$]([.][a-zA-Z_$][0-9a-zA-Z_$])*\*?/g];
+	      AS3Pattern.REQUIRE = [/./g, /["'](.*?)['"]/g];
+	      AS3Pattern.CURLY_BRACE = [/[\{|\}]/g, /[\{|\}]/g];
+	      AS3Pattern.VARIABLE = [/[0-9a-zA-Z_$]/g, /[a-zA-Z_$][0-9a-zA-Z_$]*/g];
+	      AS3Pattern.VARIABLE_TYPE = [/[a-zA-Z_$<>.*][0-9a-zA-Z_$<>.]*/g, /[a-zA-Z_$<>.*][0-9a-zA-Z_$<>.]*/g];
+	      AS3Pattern.VARIABLE_DECLARATION = [/[0-9a-zA-Z_$:<>.*]/g, /[a-zA-Z_$][0-9a-zA-Z_$]*\s*:\s*([a-zA-Z_$<>\.\*][0-9a-zA-Z_$<>\.]*)/g];
+	      AS3Pattern.ASSIGN_START = [/[=\r\n]/g, /[=\r\n]/g];
+	      AS3Pattern.ASSIGN_UPTO = [new RegExp("[^;\\r\\n]", "g"), /(.*?)/g];
+	      AS3Pattern.VECTOR = [/new[\s\t]+Vector\.<(.*?)>\((.*?)\)/g, /new[\s\t]+Vector\.<(.*?)>\((.*?)\)/];
+	      AS3Pattern.ARRAY = [/new[\s\t]+Array\((.*?)\)/g, /new[\s\t]+Array\((.*?)\)/];
+	      AS3Pattern.DICTIONARY = [/new[\s\t]+Dictionary\((.*?)\)/g];
+	      AS3Pattern.REST_ARG = [/\.\.\.[a-zA-Z_$][0-9a-zA-Z_$]*/g, /\.\.\.[a-zA-Z_$][0-9a-zA-Z_$]*/g];
+
+	    };
+
+	    AS3Pattern.prototype.$init = function() {}
 
 	    module.exports = AS3Pattern;
 	  };
@@ -10000,11 +10020,10 @@
 	    var AS3Parser;
 	    module.inject = function() {
 	      AS3Parser = module.import('com.mcleodgaming.as3js.parser', 'AS3Parser');
-	      Main.DEBUG_MODE = false;
-	      Main.SILENT = false;
 	    };
 
 	    var Main = function() {
+	      this.$init();
 
 	    };
 
@@ -10031,6 +10050,13 @@
 	      console.warn.apply(console, arguments);
 	    };
 
+	    Main.$cinit = function() {
+	      Main.DEBUG_MODE = false;
+	      Main.SILENT = false;
+
+	    };
+
+	    Main.prototype.$init = function() {};
 	    Main.prototype.compile = function(options) {
 	      options = AS3JS.Utils.getDefaultValue(options, null);
 	      var packages = {}; //Will contain the final map of package names to source text
@@ -10233,36 +10259,18 @@
 	    module.exports = Main;
 	  };
 	  Program["com.mcleodgaming.as3js.parser.AS3Class"] = function(module, exports) {
-	    var Main, AS3Parser, AS3Pattern, AS3Function, AS3Variable;
+	    var Main, AS3Parser, AS3MemberType, AS3Pattern, AS3Function, AS3Variable;
 	    module.inject = function() {
 	      Main = module.import('com.mcleodgaming.as3js', 'Main');
 	      AS3Parser = module.import('com.mcleodgaming.as3js.parser', 'AS3Parser');
+	      AS3MemberType = module.import('com.mcleodgaming.as3js.enums', 'AS3MemberType');
 	      AS3Pattern = module.import('com.mcleodgaming.as3js.enums', 'AS3Pattern');
 	      AS3Function = module.import('com.mcleodgaming.as3js.types', 'AS3Function');
 	      AS3Variable = module.import('com.mcleodgaming.as3js.types', 'AS3Variable');
-	      AS3Class.reservedWords = ["as", "class", "delete", "false", "if", "instanceof", "native", "private", "super", "to", "use", "with", "break", "const", "do", "finally", "implements", "new", "protected", "switch", "true", "var", "case", "continue", "else", "for", "import", "internal", "null", "public", "this", "try", "void", "catch", "default", "extends", "function", "in", "is", "package", "return", "throw", "typeof", "while", "each", "get", "set", "namespace", "include", "dynamic", "final", "natiev", "override", "static", "abstract", "char", "export", "long", "throws", "virtual", "boolean", "debugger", "float", "prototype", "to", "volatile", "byte", "double", "goto", "short", "transient", "cast", "enum", "intrinsic", "synchronized", "type"];
-	      AS3Class.nativeTypes = ["Boolean", "Number", "int", "uint", "String"];
 	    };
 
 	    var AS3Class = function(options) {
-	      this.imports = null;
-	      this.requires = null;
-	      this.importWildcards = null;
-	      this.importExtras = null;
-	      this.interfaces = null;
-	      this.parentDefinition = null;
-	      this.members = null;
-	      this.staticMembers = null;
-	      this.getters = null;
-	      this.setters = null;
-	      this.staticGetters = null;
-	      this.staticSetters = null;
-	      this.membersWithAssignments = null;
-	      this.fieldMap = null;
-	      this.staticFieldMap = null;
-	      this.classMap = null;
-	      this.classMapFiltered = null;
-	      this.packageMap = null;
+	      this.$init();
 	      options = AS3JS.Utils.getDefaultValue(options, null);
 	      options = options || {};
 	      this.safeRequire = false;
@@ -10296,11 +10304,45 @@
 	      this.classMap = {};
 	      this.classMapFiltered = {};
 	      this.packageMap = {};
+
+	      var $init = new AS3Function();
+	      $init.name = "$init";
+	      $init.value = "{}";
+	      $init.type === AS3MemberType.FUNCTION;
+	      $init.isStatic = false;
+	      this.members.push($init);
+	      this.registerField($init.name, $init);
 	    };
 
 	    AS3Class.reservedWords = null;
 	    AS3Class.nativeTypes = null;
 
+	    AS3Class.$cinit = function() {
+	      AS3Class.reservedWords = ["as", "class", "delete", "false", "if", "instanceof", "native", "private", "super", "to", "use", "with", "break", "const", "do", "finally", "implements", "new", "protected", "switch", "true", "var", "case", "continue", "else", "for", "import", "internal", "null", "public", "this", "try", "void", "catch", "default", "extends", "function", "in", "is", "package", "return", "throw", "typeof", "while", "each", "get", "set", "namespace", "include", "dynamic", "final", "natiev", "override", "static", "abstract", "char", "export", "long", "throws", "virtual", "boolean", "debugger", "float", "prototype", "to", "volatile", "byte", "double", "goto", "short", "transient", "cast", "enum", "intrinsic", "synchronized", "type"];
+	      AS3Class.nativeTypes = ["Boolean", "Number", "int", "uint", "String"];
+
+	    };
+
+	    AS3Class.prototype.$init = function() {
+	      this.imports = null;
+	      this.requires = null;
+	      this.importWildcards = null;
+	      this.importExtras = null;
+	      this.interfaces = null;
+	      this.parentDefinition = null;
+	      this.members = null;
+	      this.staticMembers = null;
+	      this.getters = null;
+	      this.setters = null;
+	      this.staticGetters = null;
+	      this.staticSetters = null;
+	      this.membersWithAssignments = null;
+	      this.fieldMap = null;
+	      this.staticFieldMap = null;
+	      this.classMap = null;
+	      this.classMapFiltered = null;
+	      this.packageMap = null;
+	    };
 	    AS3Class.prototype.packageName = null;
 	    AS3Class.prototype.className = null;
 	    AS3Class.prototype.imports = null;
@@ -10507,6 +10549,17 @@
 	        }
 	      }
 
+	      var classMember;
+	      // Same logic as checkMembersWithAssignments()
+	      // For each member that has an assignment at the top-level scope
+	      for (i = 0; i < this.membersWithAssignments.length; i++) {
+	        classMember = this.membersWithAssignments[i];
+	        // Make a dumb attempt to identify use of the class as assignments here
+	        if (classMember.value && classMember.value.indexOf(shorthand) >= 0 && !(this.parentDefinition && this.parentDefinition.packageName + "." + this.parentDefinition.className === pkg)) {
+	          return true;
+	        }
+	      }
+
 	      return false;
 	    };
 	    AS3Class.prototype.addImport = function(pkg) {
@@ -10654,13 +10707,18 @@
 	        }
 	      }
 
+	      // Insert $init function for instantiations
 	      for (i in allFuncs) {
 	        Main.debug("Now parsing function: " + this.className + ":" + allFuncs[i].name);
 	        allFuncs[i].value = AS3Parser.parseFunc(this, allFuncs[i].value, allFuncs[i].buildLocalVariableStack(), allFuncs[i].isStatic)[0];
 	        allFuncs[i].value = AS3Parser.checkArguments(allFuncs[i]);
-	        if (allFuncs[i].name === this.className) {
+	        if (allFuncs[i].name === "$init") {
 	          //Inject instantiations here
 	          allFuncs[i].value = AS3Parser.injectInstantiations(this, allFuncs[i]);
+	        }
+	        if (allFuncs[i].name === this.className) {
+	          //Inject $init() into constructor
+	          allFuncs[i].value = AS3Parser.injectInit(this, allFuncs[i]);
 	        }
 	        allFuncs[i].value = AS3Parser.cleanup(allFuncs[i].value);
 	        //Fix supers
@@ -10668,6 +10726,7 @@
 	        allFuncs[i].value = allFuncs[i].value.replace(/super\(/g, this.parent + '.call(this, ').replace(/\.call\(this,\s*\)/g, ".call(this)");
 	        allFuncs[i].value = allFuncs[i].value.replace(new RegExp("this[.]" + this.parent, "g"), this.parent); //Fix extra 'this' on the parent
 	      }
+
 	      for (i in allStaticFuncs) {
 	        Main.debug("Now parsing static function: " + this.className + ":" + allStaticFuncs[i].name);
 	        allStaticFuncs[i].value = AS3Parser.parseFunc(this, allStaticFuncs[i].value, allStaticFuncs[i].buildLocalVariableStack(), allStaticFuncs[i].isStatic)[0];
@@ -10734,12 +10793,6 @@
 	          }
 	        }
 	      }
-	      //Set the non-native statics vars now
-	      for (i in this.staticMembers) {
-	        if (!(this.staticMembers[i] instanceof AS3Function)) {
-	          injectedText += "\t" + AS3Parser.cleanup(this.className + '.' + this.staticMembers[i].name + ' = ' + this.staticMembers[i].value + ";\n");
-	        }
-	      }
 
 	      if (injectedText.length > 0) {
 	        buffer += "module.inject = function () {\n";
@@ -10752,6 +10805,7 @@
 	      buffer += (this.fieldMap[this.className]) ? "var " + this.stringifyFunc(this.fieldMap[this.className]) : "var " + this.className + " = function " + this.className + "() {};";
 
 	      buffer += '\n';
+	      buffer += '\n';
 
 	      if (this.parent) {
 	        //Extend parent if necessary
@@ -10760,8 +10814,9 @@
 
 	      buffer += '\n\n';
 
+	      // Deal with static member assigments
 	      if (this.staticMembers.length > 0) {
-	        //Place the static members first (skip the ones that aren't native types, we will import later
+	        //Place defaults first
 	        for (i in this.staticMembers) {
 	          if (this.staticMembers[i] instanceof AS3Function) {
 	            buffer += this.className + "." + this.stringifyFunc(this.staticMembers[i]);
@@ -10783,7 +10838,20 @@
 	        for (i in this.staticSetters) {
 	          buffer += this.className + "." + this.stringifyFunc(this.staticSetters[i]);
 	        }
+
 	        buffer += '\n';
+
+	        buffer += this.className + ".$cinit = function () {\n";
+
+	        // Now do the assignments for the rest
+	        for (i in this.staticMembers) {
+	          if (!(this.staticMembers[i] instanceof AS3Function)) {
+	            buffer += "\t" + AS3Parser.cleanup(this.className + '.' + this.staticMembers[i].name + ' = ' + this.staticMembers[i].value + ";\n");
+	          }
+	        }
+
+	        buffer += '\n';
+	        buffer += "};\n";
 	      }
 	      buffer += "\n";
 
@@ -10854,12 +10922,10 @@
 	      AS3Function = module.import('com.mcleodgaming.as3js.types', 'AS3Function');
 	      AS3Member = module.import('com.mcleodgaming.as3js.types', 'AS3Member');
 	      AS3Variable = module.import('com.mcleodgaming.as3js.types', 'AS3Variable');
-	      AS3Parser.PREVIOUS_BLOCK = null;
 	    };
 
 	    var AS3Parser = function(src, classPath) {
-	      this.stack = null;
-	      this.parserOptions = null;
+	      this.$init();
 	      classPath = AS3JS.Utils.getDefaultValue(classPath, null);
 	      //index = 0;
 	      this.stack = [];
@@ -11128,6 +11194,12 @@
 	          text += "\n\t\t\tthis." + cls.members[i].name + " = " + cls.members[i].value + ";";
 	        }
 	      }
+	      return fn.value.substr(0, start + 1) + text + fn.value.substr(start + 1);
+	    };
+	    AS3Parser.injectInit = function(cls, fn) {
+	      var start = fn.value.indexOf('{');
+	      var text = "\n\t\t\tthis.$init();";
+
 	      return fn.value.substr(0, start + 1) + text + fn.value.substr(start + 1);
 	    };
 	    AS3Parser.checkStack = function(stack, name) {
@@ -11509,6 +11581,15 @@
 	      return text;
 	    };
 
+	    AS3Parser.$cinit = function() {
+	      AS3Parser.PREVIOUS_BLOCK = null;
+
+	    };
+
+	    AS3Parser.prototype.$init = function() {
+	      this.stack = null;
+	      this.parserOptions = null;
+	    };
 	    AS3Parser.prototype.stack = null;
 	    AS3Parser.prototype.src = null;
 	    AS3Parser.prototype.classPath = null;
@@ -11843,11 +11924,13 @@
 	  };
 	  Program["com.mcleodgaming.as3js.parser.AS3Token"] = function(module, exports) {
 	    var AS3Token = function(token, index, extra) {
+	      this.$init();
 	      this.token = token;
 	      this.index = index;
 	      this.extra = extra;
 	    };
 
+	    AS3Token.prototype.$init = function() {};
 	    AS3Token.prototype.token = null;
 	    AS3Token.prototype.index = 0;
 	    AS3Token.prototype.extra = null
@@ -11858,11 +11941,13 @@
 	    var AS3Variable = module.import('com.mcleodgaming.as3js.types', 'AS3Variable');
 
 	    var AS3Argument = function() {
+	      this.$init();
 
 	    };
 
 	    AS3Argument.prototype = Object.create(AS3Variable.prototype);
 
+	    AS3Argument.prototype.$init = function() {};
 	    AS3Argument.prototype.isRestParam = false
 
 	    module.exports = AS3Argument;
@@ -11875,12 +11960,15 @@
 	    };
 
 	    var AS3Function = function() {
-	      this.argList = null;
+	      this.$init();
 	      this.argList = [];
 	    };
 
 	    AS3Function.prototype = Object.create(AS3Member.prototype);
 
+	    AS3Function.prototype.$init = function() {
+	      this.argList = null;
+	    };
 	    AS3Function.prototype.argList = null;
 	    AS3Function.prototype.hasArgument = function() {
 	      for (var i = 0; i < this.argList.length; i++)
@@ -11918,6 +12006,7 @@
 	    };
 
 	    var AS3Member = function() {
+	      this.$init();
 	      this.name = null;
 	      this.type = '*';
 	      this.subType = null,
@@ -11926,6 +12015,7 @@
 	      this.isStatic = false;
 	    };
 
+	    AS3Member.prototype.$init = function() {};
 	    AS3Member.prototype.name = null;
 	    AS3Member.prototype.type = null;
 	    AS3Member.prototype.subType = null;
@@ -11959,10 +12049,13 @@
 	    var AS3Member = module.import('com.mcleodgaming.as3js.types', 'AS3Member');
 
 	    var AS3Variable = function() {
+	      this.$init();
 
 	    };
 
 	    AS3Variable.prototype = Object.create(AS3Member.prototype);
+
+	    AS3Variable.prototype.$init = function() {}
 
 	    module.exports = AS3Variable;
 	  };
